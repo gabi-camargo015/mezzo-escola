@@ -1,0 +1,39 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600;1,700&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --color-mezzo-ink: #100d17;
+  --color-mezzo-surface: #fbf8f2;
+  --color-mezzo-purple: #50247a;
+  --color-mezzo-purple-dark: #2c1746;
+  --color-mezzo-purple-light: #8d5cc0;
+  --color-mezzo-yellow: #f6c542;
+  --color-mezzo-yellow-light: #ffe08a;
+  --font-sans: "DM Sans", Arial, sans-serif;
+  --font-display: "Playfair Display", Georgia, serif;
+}
+
+:root {
+  color: var(--color-mezzo-ink);
+  background: var(--color-mezzo-surface);
+  font-family: var(--font-sans);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+html { scroll-behavior: smooth; }
+
+body { margin: 0; min-width: 320px; min-height: 100vh; }
+
+button, input, select, textarea { font: inherit; }
+
+:focus-visible { outline: 3px solid var(--color-mezzo-yellow); outline-offset: 3px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}

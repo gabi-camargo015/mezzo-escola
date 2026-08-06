@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /portal/
+
+# Atualize para o domínio oficial antes da publicação.
+Sitemap: https://www.seudominio.com.br/sitemap.xml

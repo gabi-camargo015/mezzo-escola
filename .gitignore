@@ -1,0 +1,18 @@
+# Dependências e arquivos gerados
+node_modules/
+dist/
+*.tsbuildinfo
+
+# Variáveis de ambiente e credenciais
+.env
+.env.*
+!.env.example
+
+# Logs e arquivos do sistema
+*.log
+.DS_Store
+Thumbs.db
+
+# Configurações locais de editores
+.vscode/
+.idea/
