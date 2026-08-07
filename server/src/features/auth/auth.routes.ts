@@ -14,6 +14,12 @@ const credentialsSchema = z.object({
   password: z.string().min(8).max(128),
 });
 
+const bootstrapAdministratorSchema = z.object({
+  email: z.string().trim().email(),
+  name: z.string().trim().min(2).max(150),
+  password: z.string().min(12).max(128),
+});
+
 const hashToken = (token: string) => createHash('sha256').update(token).digest('hex');
 
 const refreshCookieOptions = {
@@ -24,6 +30,40 @@ const refreshCookieOptions = {
 };
 
 export const authRouter = Router();
+
+/**
+ * Initializes the first administrator in a new installation. This endpoint is
+ * intentionally unavailable after an administrator exists and requires the
+ * private token configured only in the hosting environment.
+ */
+authRouter.post('/bootstrap-admin', async (request, response, next) => {
+  try {
+    const bootstrapToken = process.env.INIT_ADMIN_TOKEN;
+    if (!bootstrapToken || request.header('x-mezzo-bootstrap-token') !== bootstrapToken) {
+      response.status(404).json({ message: 'Recurso não encontrado.' });
+      return;
+    }
+
+    const existingAdministrator = await prisma.user.findFirst({ where: { role: 'ADMIN' }, select: { id: true } });
+    if (existingAdministrator) {
+      response.status(409).json({ message: 'O administrador inicial já foi criado.' });
+      return;
+    }
+
+    const input = bootstrapAdministratorSchema.parse(request.body);
+    const existingUser = await prisma.user.findUnique({ where: { email: input.email } });
+    if (existingUser) {
+      response.status(409).json({ message: 'Já existe uma conta com este e-mail.' });
+      return;
+    }
+
+    const passwordHash = await bcrypt.hash(input.password, 12);
+    const user = await prisma.user.create({ data: { name: input.name, email: input.email, passwordHash, role: 'ADMIN' } });
+    response.status(201).json({ user: { id: user.id, name: user.name, email: user.email, role: user.role } });
+  } catch (error) {
+    next(error);
+  }
+});
 
 authRouter.post('/login', async (request, response, next) => {
   try {
